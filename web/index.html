@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image Pixelation (Wasm)</title>
+  <style>
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+    img {
+      max-width: 100%;
+      margin-top: 20px;
+    }
+    .controls {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gabigabi generator</h1>
+    <input type="file" id="inputFile" accept="image/*"><br><br>
+
+    <label for="scale">Scale (0.1 to 1):</label>
+    <input type="number" id="scale" min="0.1" max="1" step="0.1" value="0.1"><br><br>
+
+    <label for="sharpen">Sharpen (0 to 5):</label>
+    <input type="number" id="sharpen" min="0" max="5" step="0.1" value="1.0"><br><br>
+
+    <label for="format">Output Format:</label>
+    <select id="format">
+      <option value="png" selected>PNG</option>
+      <option value="jpeg">JPEG</option>
+    </select><br><br>
+
+    <button id="processButton">Process Image</button>
+
+    <h3>Output Image:</h3>
+    <img id="outputImage" alt="Output will appear here">
+  </div>
+
+  <script src="wasm_exec.js"></script>
+  <script>
+    const go = new Go();
+    WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
+      go.run(result.instance);
+    });
+
+    document.getElementById("processButton").addEventListener("click", async () => {
+      const inputFile = document.getElementById("inputFile").files[0];
+      const scale = parseFloat(document.getElementById("scale").value);
+      const sharpen = parseFloat(document.getElementById("sharpen").value);
+      const format = document.getElementById("format").value;
+
+      if (!inputFile) {
+        alert("Please select an image file!");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const inputBase64 = btoa(e.target.result);
+
+        // Go の processImage 関数を呼び出す
+        const resultBase64 = processImage(inputBase64, scale, sharpen, format);
+
+        // 出力画像を表示
+        const outputImage = document.getElementById("outputImage");
+        outputImage.src = `data:image/${format};base64,${resultBase64}`;
+      };
+
+      reader.readAsBinaryString(inputFile);
+    });
+  </script>
+</body>
+</html>
