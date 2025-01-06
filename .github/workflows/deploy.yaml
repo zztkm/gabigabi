@@ -21,7 +21,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-            go-version-file: 'go.mod'
+          go-version-file: 'go.mod'
 
       - name: Build
         run: |
@@ -36,7 +36,9 @@ jobs:
           cp web/wasm_exec.js _site/
       
       - name: Upload GitHub Pages artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
+        with:
+          path: _site/ 
 
   # Deployment job
   deploy:
