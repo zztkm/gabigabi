@@ -27,6 +27,8 @@ jobs:
         run: |
           GOOS=js GOARCH=wasm go build -o main.wasm cmd/wasm/main.go
     
+      # NOTE: _site は actions/upload-pages-artifact のデフォルト値
+      # https://github.com/actions/upload-pages-artifact?tab=readme-ov-file#inputs-
       - name: Prepare static files
         run: |
           mkdir _site/
@@ -35,11 +37,7 @@ jobs:
           cp web/wasm_exec.js _site/
       
       - name: Upload GitHub Pages artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'github-pages'
-          path: _site/ 
-
+        uses: actions/upload-pages-artifact@v3
 
   # Deployment job
   deploy:
@@ -55,5 +53,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          artifact_name: 'github-pages'
