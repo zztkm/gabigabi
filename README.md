@@ -4,6 +4,12 @@ png / jpg 画像をガビガビにするツールです。
 
 ドット絵の資料画像作成のために開発しました。
 
+## Install
+
+```bash
+go install github.com/zztkm/gabigabi@latest
+```
+
 ## Usage
 
 ```bash

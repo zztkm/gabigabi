@@ -1,4 +1,4 @@
-module gabigabi
+module github.com/zztkm/gabigabi
 
 go 1.23.3
 
